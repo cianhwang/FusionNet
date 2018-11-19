@@ -1,8 +1,9 @@
 clc;clear;close all
+addpath('~/Downloads/ILSVRC2012_img_val/')
 prefix = "ILSVRC2012_val_0000";
 surfix = ".JPEG";
 
-for i = 1:100%:10%000
+for i = 1001:2000
     filename = strcat(prefix, num2str(i, '%04d'), surfix);
     I = imread(filename);
     [m, n, ~] = size(I);
@@ -11,17 +12,25 @@ for i = 1:100%:10%000
     I_crop = I(x_idx:x_idx+63,y_idx:y_idx+63,:);
  %   figure, imshow(I_crop);
     %mask = randMask(I_crop);
-    mask = ones(64, 64);
-    bw = activecontour(I_crop, mask, 100);
- %   figure, imshow(bw);
-    se = strel('disk',10);
-    openBW = imopen(bw,se);
-    figure, imshow(openBW);
-    openBW = repmat(uint8(openBW), [1, 1, 3]);
-    img1 = imgaussfilt(I_crop.*openBW, 2) + I_crop.*(1-openBW);
- %   figure, imshow(img1);
- 	img2 = imgaussfilt(I_crop.*(1-openBW), 2) + I_crop.*openBW;
-  %  figure, imshow(img2);
+%     mask = ones(64, 64);
+%     bw = activecontour(I_crop, mask, 100);
+%  %   figure, imshow(bw);
+%     se = strel('disk',10);
+%     openBW = imopen(bw,se);
+%     %figure, imshow(openBW);
+%     openBW = repmat(uint8(openBW), [1, 1, 3]);
+%     
+%     GaussianBlurParam1 = (rand*2+1);
+%     GaussianBlurParam2 = (rand*2+1);
+%     
+%     img1 = imgaussfilt(I_crop.*openBW, GaussianBlurParam1) + I_crop.*(1-openBW);
+%  %   figure, imshow(img1);
+%  	img2 = imgaussfilt(I_crop.*(1-openBW), GaussianBlurParam2) + I_crop.*openBW;
+%   %  figure, imshow(img2);
+%     %figure, imshowpair(img1,img2, 'montage');
+     imwrite(I_crop, strcat('~/Downloads/clearImg/',num2str(i, '%04d'), '_0.jpeg'));
+%     imwrite(img1, strcat(num2str(i, '%04d'), '_1.jpeg'));
+%     imwrite(img2, strcat(num2str(i, '%04d'), '_2.jpeg'));
 end
 
 function [x_idx, y_idx] = findSaliency(I)
@@ -42,6 +51,7 @@ function [x_idx, y_idx] = findSaliency(I)
            y_idx = tempy(i);
        end
         catch
+            %disp(i);
             continue;
         end
     end
