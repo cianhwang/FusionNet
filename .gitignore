@@ -1,1 +1,3 @@
 *.JPEG
+*.jpeg
+.DS_Store
