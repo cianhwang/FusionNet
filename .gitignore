@@ -1,8 +1,4 @@
 *.JPEG
 *.jpeg
-<<<<<<< HEAD
-.DS_Store
-=======
 *.png
 .DS_Store
->>>>>>> 9c545c3d1ab6acd1ae5af227f0f4db84f0003be0
