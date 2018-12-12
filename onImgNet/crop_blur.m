@@ -3,7 +3,8 @@ addpath('~/Downloads/ILSVRC2012_img_val/')
 prefix = "ILSVRC2012_val_0000";
 surfix = ".JPEG";
 
-for i = 17
+for i = 1:4000
+    disp(i)
     filename = strcat(prefix, num2str(i, '%04d'), surfix);
     I = im2double(imread(filename));
     [m, n, ~] = size(I);
@@ -20,8 +21,8 @@ for i = 17
     %figure, imshow(openBW);
     openBW3 = double(repmat(uint8(openBW), [1, 1, 3]));
     
-    GaussianBlurParam1 = (rand+1);
-    GaussianBlurParam2 = (rand+1);
+    GaussianBlurParam1 = (2*rand+3);
+    GaussianBlurParam2 = (2*rand+3);
     
 	ff_merged = merge_image(I_crop.*openBW3, openBW, GaussianBlurParam1, I_crop);
     nf_merged = merge_image(I_crop.*openBW3, openBW, 0.1, imgaussfilt(I_crop,GaussianBlurParam2));
@@ -31,9 +32,9 @@ for i = 17
 %  	img2 = imgaussfilt(I_crop.*(1-openBW), GaussianBlurParam2) + I_crop.*openBW;
 %   %  figure, imshow(img2);
     %figure, imshowpair(ff_merged,nf_merged, 'montage');
-	imwrite(I_crop, strcat('~/Downloads/testcase_lite/',num2str(i, '%04d'), '_0.jpeg'));
-    imwrite(ff_merged, strcat('~/Downloads/testcase_lite/', num2str(i, '%04d'), '_1.jpeg'));
-    imwrite(nf_merged, strcat('~/Downloads/testcase_lite/', num2str(i, '%04d'), '_2.jpeg'));
+	imwrite(I_crop, strcat('~/Downloads/testcase_pro/',num2str(i, '%04d'), '_0.jpeg'));
+    imwrite(ff_merged, strcat('~/Downloads/testcase_pro/', num2str(i, '%04d'), '_1.jpeg'));
+    imwrite(nf_merged, strcat('~/Downloads/testcase_pro/', num2str(i, '%04d'), '_2.jpeg'));
 end
 
 function merged = merge_image(foreground, alpha, blur_sigma, background)
@@ -57,7 +58,7 @@ function [x_idx, y_idx] = findSaliency(I)
     max_diff = 0;
     x_idx = 0;
     y_idx = 0;
-    for i = 1:500
+    for i = 1:1000
         try
        I_temp = I(tempx(i):tempx(i)+47, tempy(i):tempy(i)+47, :);
        diff_total = mean(diff(I_temp, 1, 1).^2, 'all') + mean(diff(I_temp, 1, 2).^2, 'all');
