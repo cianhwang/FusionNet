@@ -5,3 +5,8 @@
 *.jpg
 *.bmp
 *.tif
+*.npy
+*.hdf
+*.h5
+*.hdf5
+*.he5
