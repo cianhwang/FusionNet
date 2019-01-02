@@ -1,4 +1,4 @@
-clc;clear;close all
+    clc;clear;close all
 addpath('~/Downloads/ILSVRC2012_img_val/')
 prefix = "ILSVRC2012_val_0000";
 surfix = ".JPEG";
