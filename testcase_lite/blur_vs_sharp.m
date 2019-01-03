@@ -1,18 +1,19 @@
 clc; clear; close all;
 
-for idx = 7%1:4000
-    prefix = num2str(idx, '%04d');
-%     I1 = imread(strcat(prefix, '_1.jpeg'));
-%     I2 = imread(strcat(prefix, '_2.jpeg'));
-%     I0 = imread(strcat(prefix, '_0.jpeg'));
-    I1 = imread('t3a.jpg');
-    I2 = imread('t3b.jpg');
+for idx = 1:20000
+    disp(idx);
+    prefix = num2str(idx, '%05d');
+    I1 = imread(strcat(prefix, '_1.jpeg'));
+    I2 = imread(strcat(prefix, '_2.jpeg'));
+    I0 = imread(strcat(prefix, '_0.jpeg'));
+%     I1 = imread('t3a.jpg');
+%     I2 = imread('t3b.jpg');
     
     [m, n, ~] = size(I1);
     rawMask1 = zeros(m, n);
     rawMask2 = zeros(m, n);
     
-    blockSize = 4;
+    blockSize = 8;
     for i = 1:m/blockSize
         for j = 1:n/blockSize
             xrange = ((i-1)*blockSize+1):i*blockSize;
@@ -26,9 +27,9 @@ for idx = 7%1:4000
             
         end
     end
-    montage({I1, I2, rawMask1 > rawMask2})
+    %montage({I1, I2, rawMask1 > rawMask2})
     
-    %imwrite(rawMask1 > rawMask2, strcat(prefix, '_4.jpeg'));
+    imwrite(rawMask1 > rawMask2, strcat(prefix, '_4.jpeg'));
 end
 
 
