@@ -47,12 +47,9 @@ dataPath = "highres_dataset/"
 x1 = load_imgs(dataPath, dataNum, 1)
 x2 = load_imgs(dataPath, dataNum, 2)
 y = load_imgs(dataPath, dataNum, 0)
-#y = y[:, 8:-8, 8:-8, :]
-mask = load_imgs(dataPath, dataNum, 4)
-mask = 255-mask[:, :, :, :1]
 
-x_train1, x_test1, x_train2, x_test2, y_train, y_test, mask_train, mask_test = train_test_split(
-    x1, x2, y, mask, test_size=0.25)
+x_train1, x_test1, x_train2, x_test2, y_train, y_test= train_test_split(
+    x1, x2, y, test_size=0.2)
 
 
 # In[ ]:
@@ -213,7 +210,7 @@ pred = layers.Lambda(fusionnetPos)([intermed, img1, img2])
 
 
 '''2 outputs: 'pred' for GAN loss and 'intermed' for mask loss'''
-generator = Model(inputs = [img1, img2], outputs = [pred, intermed])
+generator = Model(inputs = [img1, img2], outputs = [pred])
 generator.summary()
 
 
@@ -221,21 +218,18 @@ generator.summary()
 
 
 def data_gen(features, labels, batch_size):
-#    features1, features2 = features
-#    labels1, labels2 = labels
+    features1, features2 = features
  # Create empty arrays to contain batch of features and labels#
     batch_features1 = np.zeros((batch_size, 256, 256, 3))
     batch_features2 = np.zeros((batch_size, 256, 256, 3))
-    batch_labels1 = np.zeros((batch_size, 256, 256, 3))
-    batch_labels2 = np.zeros((batch_size, 256, 256, 1))
+    batch_labels = np.zeros((batch_size, 256, 256, 3))
     while True:
         for i in np.arange(0, features1.shape[0] - batch_size, batch_size):
             # choose random index in features
-            batch_features1 = features1[i:i+batch_size, :, :, :].astype('float16')/127.5-1
-            batch_features2 = features2[i:i+batch_size, :, :, :].astype('float16')/127.5-1
-            batch_labels1= labels1[i:i+batch_size, :, :, :].astype('float16')/127.5-1
-            batch_labels2= labels2[i:i+batch_size, :, :, :].astype('float16')/127.5-1
-            yield ([batch_features1, batch_features2], [batch_labels1, batch_labels2])
+            batch_features1 = features1[i:i+batch_size, :, :, :]/127.5-1
+            batch_features2 = features2[i:i+batch_size, :, :, :]/127.5-1
+            batch_labels= labels[i:i+batch_size, :, :, :]/127.5-1
+            yield ([batch_features1, batch_features2], batch_labels)
 
 
 # In[ ]:
@@ -243,10 +237,10 @@ def data_gen(features, labels, batch_size):
 
 '''train on generator using MSE of pred & mask.'''
 
-generator.compile(loss=['mse','mse'], loss_weights=[1,0], optimizer= _optimizer)
+generator.compile(loss=['mse'], loss_weights=[1], optimizer= _optimizer)
 batchSize = 16
 
-generator.fit_generator(data_gen([x_train1, x_train2], [y_train, mask_train], batchSize),
+generator.fit_generator(data_gen([x_train1, x_train2], y_train, batchSize),
                         dataNum/batchSize, epochs = 300)
 
 # for e in range(10000):
