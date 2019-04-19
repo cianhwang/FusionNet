@@ -7,9 +7,9 @@ foreground([1:20,71:90],:,:) = 0.5;
 foreground(:,[1:50,116:160],:) = 0.5;
 alpha = zeros(90,160, 'single');
 alpha(21:70, 51:115) = 1; %alpha should be a 0/1 single image
-background = ones(90, 160, 3, 'single')*0.5;
-background(1:45, 1:80, :) = 1;
-background(46:90, 81:160, :) = 1;
+background = ones(90, 160, 3, 'single');
+% background(1:45, 1:80, :) = 1;
+% background(46:90, 81:160, :) = 1;
 
 % background = imgaussfilt(background, 3) .* alpha +background;
 
